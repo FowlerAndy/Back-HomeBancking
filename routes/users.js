@@ -11,7 +11,7 @@ router.get('/', async function(req, res, next) {
 router.get('/me', async function(req, res, next){
   const usuario = await User.findUser(req.body)
   res.json(usuario)
-})
+});
 
 router.post('/', async (req, res) => {
   const result = await User.addUser(req.body);
@@ -26,6 +26,20 @@ router.post('/login', async (req, res)=>{
     console.log("Se ha iniciado sesion");
     res.send({user, token});
   } catch (error) {
+    res.status(401).send(error.message);
+  }
+});
+
+router.put('/updateSaldo', async (req, res) => {
+
+  try{
+  const user = await User.findUser(req.body);
+  console.log(user);
+  const depositado = await User.updateSaldo(req.body.saldo, user)
+
+  const userFinal = await User.findUser(req.body);
+  res.send(userFinal)
+  } catch (error){
     res.status(401).send(error.message);
   }
 });

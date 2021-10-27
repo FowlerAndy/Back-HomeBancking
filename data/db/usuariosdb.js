@@ -44,4 +44,20 @@ async function getUsuarios() {
     return token;
   }
 
- module.exports = {getUsuarios, findUser, addUser, generateJWT}
+   async function updateSaldo(saldo, user){
+
+      console.log(user);
+      console.log(saldo);
+      const connectiondb = await connection.getConnection();
+      var newvalues = { $set: {saldo: user.saldo + saldo} }
+      const query = { _id: new ObjectId(user._id)}
+
+      const result = await connectiondb.db('homebanking')
+                            .collection('users')
+                            .updateOne(query, newvalues, function(err, res) {
+                              if (err) throw err;
+                              console.log("1 document updated")});
+
+      return result
+   }
+ module.exports = {getUsuarios, findUser, addUser, generateJWT, updateSaldo}
