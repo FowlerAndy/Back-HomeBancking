@@ -72,6 +72,10 @@ async function getUsuarios() {
 
    async function updatePesos(pesos, user){
 
+      if(-pesos > user.pesos){
+         throw new Error('Imposible de realizar la extraccion solicitada')
+      }
+
       console.log(user);
       console.log(pesos);
       const connectiondb = await connection.getConnection();
@@ -88,6 +92,11 @@ async function getUsuarios() {
    }
 
    async function cambioDolar(body, user){
+
+      if(body.pesos > user.pesos){
+         throw new Error('Imposible de realizar la extraccion solicitada')
+      }
+
       const connectiondb = await connection.getConnection();
 
       const montoPesos = await updatePesos(-body.pesos, user);
