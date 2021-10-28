@@ -20,9 +20,13 @@ async function getUsuarios() {
     .collection('users')
     .findOne({email: body.email})
 
+    if(!usuario){
+      throw new Error('Usuario o Password invalida');
+    }
+
      const isMatch =  bcrypt.compareSync(body.password, usuario.password);
      
-     if(!usuario || !isMatch){
+     if(!isMatch){
          throw new Error('Usuario o Password invalida');
      } 
 
@@ -30,14 +34,36 @@ async function getUsuarios() {
  }
 
  async function addUser(user){
+
+   const emailExistente = await searchEmail(user.email)
+
+   if(emailExistente){
+      throw new Error('El Email pertenece a una cuenta anteriormente creada')
+   }
+
     const connectiondb = await connection.getConnection();
     user.password = bcrypt.hashSync(user.password, 8);
   
     const result = await connectiondb.db('homebanking')
                             .collection('users')
-                            .insertOne(user);
+                            .insertOne({name: user.name,
+                                        lastname: user.lastname,
+                                        email: user.email,
+                                        password: user.password,
+                                        pesos: 0,
+                                        dolares: 0});
     return result;
   }
+  
+  async function searchEmail(email){
+   const clientMongo = await connection.getConnection();
+   const usuario = await clientMongo
+   .db('homebanking')
+   .collection('users')
+   .findOne({email: email})
+
+   return usuario
+}
 
   async function generateJWT(user){
     const token = jwt.sign({_id: user._id, email: user.apellido}, process.env.SECRET, {expiresIn: '1h'});
@@ -60,4 +86,5 @@ async function getUsuarios() {
 
       return result
    }
+
  module.exports = {getUsuarios, findUser, addUser, generateJWT, updateSaldo}

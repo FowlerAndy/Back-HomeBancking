@@ -9,13 +9,21 @@ router.get('/', async function(req, res, next) {
   });
 
 router.get('/me', async function(req, res, next){
+  try{
   const usuario = await User.findUser(req.body)
   res.json(usuario)
+  }catch(error){
+    res.status(401).send(error.message);
+  }
 });
 
 router.post('/', async (req, res) => {
+  try{
   const result = await User.addUser(req.body);
   res.json(result);
+  }catch(error){
+    res.status(401).send(error.message)
+  }
 });
 
 router.post('/login', async (req, res)=>{
