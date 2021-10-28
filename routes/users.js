@@ -38,17 +38,35 @@ router.post('/login', async (req, res)=>{
   }
 });
 
-router.put('/updateSaldo', async (req, res) => {
+router.put('/depositarExtraerPesos', async (req, res) => {
 
   try{
   const user = await User.findUser(req.body);
-  console.log(user);
-  const depositado = await User.updateSaldo(req.body.saldo, user)
+
+  const depositado = await User.updatePesos(req.body.pesos, user)
 
   const userFinal = await User.findUser(req.body);
+
   res.send(userFinal)
   } catch (error){
+    
     res.status(401).send(error.message);
+  }
+});
+
+router.put('/cambioDolar', async (req, res)=>{
+  
+  try{
+  const user = await User.findUser(req.body);
+
+  const depositado = await User.cambioDolar(req.body, user)
+
+  const userFinal = await User.findUser(req.body);
+
+  res.send(userFinal)
+  }catch(error){
+
+    res.status(401).send(error.message)
   }
 });
 

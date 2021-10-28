@@ -70,12 +70,12 @@ async function getUsuarios() {
     return token;
   }
 
-   async function updateSaldo(saldo, user){
+   async function updatePesos(pesos, user){
 
       console.log(user);
-      console.log(saldo);
+      console.log(pesos);
       const connectiondb = await connection.getConnection();
-      var newvalues = { $set: {saldo: user.saldo + saldo} }
+      var newvalues = { $set: {pesos: user.pesos + pesos} }
       const query = { _id: new ObjectId(user._id)}
 
       const result = await connectiondb.db('homebanking')
@@ -87,4 +87,21 @@ async function getUsuarios() {
       return result
    }
 
- module.exports = {getUsuarios, findUser, addUser, generateJWT, updateSaldo}
+   async function cambioDolar(body, user){
+      const connectiondb = await connection.getConnection();
+
+      const montoPesos = await updatePesos(-body.pesos, user);
+
+      var newvalues = { $set: {dolares: user.dolares + (body.pesos / 200)} }
+      const query = { _id: new ObjectId(user._id)}
+
+      const result = await connectiondb.db('homebanking')
+                            .collection('users')
+                            .updateOne(query, newvalues, function(err, res) {
+                              if (err) throw err;
+                              console.log("1 document updated")});
+
+      return result
+
+   }
+ module.exports = {getUsuarios, findUser, addUser, generateJWT, updatePesos, cambioDolar}
