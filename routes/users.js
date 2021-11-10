@@ -10,7 +10,7 @@ router.get('/', async function(req, res, next) {
 
 router.get('/me', async function(req, res, next){
   try{
-  const usuario = await User.findUser(req.body)
+  const usuario = await User.searchToken(req.header)
   res.json(usuario)
   }catch(error){
     res.status(401).send(error.message);
@@ -41,7 +41,7 @@ router.post('/login', async (req, res)=>{
 router.put('/depositarExtraerPesos', async (req, res) => {
 
   try{
-  const user = await User.findUser(req.body);
+  const user = await User.searchToken(req.header);
 
   const depositado = await User.updatePesos(req.body.pesos, user)
 
@@ -54,14 +54,14 @@ router.put('/depositarExtraerPesos', async (req, res) => {
   }
 });
 
-router.put('/cambioDolar', async (req, res)=>{
+router.put('/conversionMoneda', async (req, res)=>{
   
   try{
-  const user = await User.findUser(req.body);
+  const user = await User.searchToken(req.header);
 
-  const depositado = await User.cambioDolar(req.body, user)
+  const depositado = await User.conversionMoneda(req.body, user)
 
-  const userFinal = await User.findUser(req.body);
+  const userFinal = await User.searchToken(req.header);
 
   res.send(userFinal)
   }catch(error){
@@ -69,5 +69,19 @@ router.put('/cambioDolar', async (req, res)=>{
     res.status(401).send(error.message)
   }
 });
+
+router.put('/inversion', async (req, res)=>{
+  try{
+
+    const user = await User.searchToken(req.header);
+    
+    const invertido = await User.inversiones(req, user)
+
+    res.send(invertido)
+
+  }catch(error){
+    res.status(401).send(error.message)
+  }
+})
 
 module.exports = router;
