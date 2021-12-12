@@ -153,7 +153,7 @@ async function searchToken(req){
 
        console.log('interes: ', interes);
 
-      //  var finalUser = await searchToken(req.header)
+        var finalUser = await searchToken(req.body.email)
 
       //  console.log('cuenta actual: ', finalUser.pesos);
 
