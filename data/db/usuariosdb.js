@@ -56,6 +56,17 @@ async function getUsuarios() {
     return result;
   }
 
+  async function searchEmail(email){
+   const clientMongo = await connection.getConnection();
+   const usuario = await clientMongo
+   .db('homebanking')
+   .collection('users')
+   .findOne({email: email});
+
+   return usuario;
+}
+
+
 async function searchToken(req){
    const clientMongo = await connection.getConnection();
    const usuario = await clientMongo
@@ -144,30 +155,20 @@ async function searchToken(req){
 
    }
 
-   async function inversiones(req, user) {
+      async function inversiones(req, user) {
 
-      const montoPesos = await updatePesos(-req.body.pesos, user);
+         var interes = ((req.body.pesos * 5) / 100)
+  
+         console.log('interes: ', interes);
+  
+         var result = await updatePesos(interes, user)
+  
+        //  console.log('Result: ', result);
+  
+        return result
+     
+        }
 
-
-       var interes = (req.body.pesos + ((req.body.pesos * 5) / 100))
-
-       console.log('interes: ', interes);
-
-        var finalUser = await searchToken(req)
-
-      //  console.log('cuenta actual: ', finalUser.pesos);
-
-       var result = await updatePesos(interes, finalUser)
-
-      //  console.log('Result: ', result);
-
-       
-      //  console.log('FinalUser cuenta: ', finalUser.pesos);
-
-      return result
-   
-      }
-
- module.exports = {getUsuarios, findUser, addUser, generateJWT, updatePesos, conversionMoneda, inversiones, searchToken}
+ module.exports = {getUsuarios, findUser, addUser, generateJWT, updatePesos, conversionMoneda, inversiones, searchEmail, searchToken}
 
  
