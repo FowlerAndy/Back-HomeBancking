@@ -73,7 +73,7 @@ router.put('/conversionMoneda', async (req, res)=>{
 router.put('/inversion', async (req, res)=>{
   try{
 
-    const user = await User.searchToken(req.header);
+    const user = await User.searchToken(req);
     
     const invertido = await User.inversiones(req, user)
 

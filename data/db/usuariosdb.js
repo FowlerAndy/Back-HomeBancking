@@ -56,12 +56,12 @@ async function getUsuarios() {
     return result;
   }
 
-async function searchToken(header){
+async function searchToken(req){
    const clientMongo = await connection.getConnection();
    const usuario = await clientMongo
    .db('homebanking')
    .collection('users')
-   .findOne({token: header.token});
+   .findOne({email: req.body});
 
    return usuario;
 }
@@ -153,16 +153,16 @@ async function searchToken(header){
 
        console.log('interes: ', interes);
 
-       var finalUser = await searchToken(req.header)
+      //  var finalUser = await searchToken(req.header)
 
-       console.log('cuenta actual: ', finalUser.pesos);
+      //  console.log('cuenta actual: ', finalUser.pesos);
 
        var result = await updatePesos(interes, finalUser)
 
-       console.log('Result: ', result);
+      //  console.log('Result: ', result);
 
        
-       console.log('FinalUser cuenta: ', finalUser.pesos);
+      //  console.log('FinalUser cuenta: ', finalUser.pesos);
 
       return result
    
