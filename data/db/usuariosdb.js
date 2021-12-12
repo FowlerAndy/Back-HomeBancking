@@ -61,7 +61,7 @@ async function searchToken(req){
    const usuario = await clientMongo
    .db('homebanking')
    .collection('users')
-   .findOne({email: req.body});
+   .findOne({email: req.body.email});
 
    return usuario;
 }
