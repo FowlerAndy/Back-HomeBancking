@@ -61,9 +61,9 @@ async function searchToken(header){
    const usuario = await clientMongo
    .db('homebanking')
    .collection('users')
-   .findOne({email: header.token.email})
+   .findOne({token: header.token});
 
-   return usuario
+   return usuario;
 }
 
   async function generateJWT(user){
