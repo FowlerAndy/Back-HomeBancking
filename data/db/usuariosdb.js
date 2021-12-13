@@ -3,6 +3,7 @@ let ObjectId = require('mongodb').ObjectId;
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sleep = require('util').promisify(setTimeout);
+// const auth = require('../middleware/auth/')
 
 async function getUsuarios() {
     const clientMongo = await connection.getConnection();
@@ -68,11 +69,12 @@ async function getUsuarios() {
 
 
 async function searchToken(req){
-   const clientMongo = await connection.getConnection();
-   const usuario = await clientMongo
-   .db('homebanking')
-   .collection('users')
-   .findOne({email: req.body.email});
+
+   // const clientMongo = await connection.getConnection();
+   // const usuario = await clientMongo
+   // .db('homebanking')
+   // .collection('users')
+   // .findOne({email: req.body.email});
 
    return usuario;
 }
