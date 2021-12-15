@@ -79,18 +79,30 @@ router.put('/conversionMoneda', auth, async (req, res)=>{
 
 router.put('/inversion', auth, async (req, res)=>{
   
-    jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
 
-     if(error){
-       res.sendStatus(403)
-     }else{
-      const user = await User.searchToken(authData)
-      const invertido = await User.inversiones(req, user)
+  try{
+    const user = await User.searchEmail(req.body.email)
+    const invertido = await User.inversiones(req, user)
 
-      console.log(authData._id);
-       res.json(invertido)
-     }
-  })
+    const userAct = await User.searchEmail(req.body.email)
+
+    res.send(userAct)
+  }catch(error){
+   res.sendStatus(error)
+  }
+  
+  //   jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
+
+  //    if(error){
+  //      res.sendStatus(403)
+  //    }else{
+  //     const user = await User.searchToken(authData)
+  //     const invertido = await User.inversiones(req, user)
+
+  //     console.log(authData._id);
+  //      res.json(invertido)
+  //    }
+  // })
 })
 
 
