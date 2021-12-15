@@ -23,7 +23,7 @@ router.get('/', async function(req, res, next) {
       }
     })
   })
-  
+
 router.post('/', async (req, res) => {
   try{
   const result = await User.addUser(req.body);
@@ -45,36 +45,36 @@ router.post('/login', async (req, res)=>{
   }
 });
 
-router.put('/depositarExtraerPesos', async (req, res) => {
+router.put('/depositarExtraerPesos', auth, async (req, res) => {
 
-  try{
-  const user = await User.searchToken(req.header);
+  jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
 
-  const depositado = await User.updatePesos(req.body.pesos, user)
+    if(error){
+      res.sendStatus(403)
+    }else{
+     const depositado = await User.updatePesos(req.body.pesos, user)
 
-  const userFinal = await User.findUser(req.body);
-
-  res.send(userFinal)
-  } catch (error){
-    
-    res.status(401).send(error.message);
-  }
+     console.log(authData._id);
+      res.json(depositado)
+    }
+ })
+ 
 });
 
-router.put('/conversionMoneda', async (req, res)=>{
+router.put('/conversionMoneda', auth, async (req, res)=>{
   
-  try{
-  const user = await User.searchToken(req.header);
+  jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
 
-  const depositado = await User.conversionMoneda(req.body, user)
+    if(error){
+      res.sendStatus(403)
+    }else{
+     const depositado = await User.conversionMoneda(req.body, user)
 
-  const userFinal = await User.searchToken(req.header);
+     console.log(authData._id);
+      res.json(depositado)
+    }
+ })
 
-  res.send(userFinal)
-  }catch(error){
-
-    res.status(401).send(error.message)
-  }
 });
 
 router.put('/inversion', auth, async (req, res)=>{
