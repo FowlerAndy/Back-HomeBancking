@@ -77,7 +77,7 @@ router.put('/conversionMoneda', auth, async (req, res)=>{
 
 });
 
-router.put('/inversion', auth, async (req, res)=>{
+router.put('/inversion', async (req, res)=>{
   
 
   try{
@@ -90,7 +90,7 @@ router.put('/inversion', auth, async (req, res)=>{
   }catch(error){
    res.sendStatus(error)
   }
-  
+
   //   jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
 
   //    if(error){
