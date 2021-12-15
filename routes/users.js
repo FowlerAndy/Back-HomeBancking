@@ -2,7 +2,7 @@ var express = require('express');
 const jwt  = require("jsonwebtoken");
 var router = express.Router();
 const User = require('../data/db/usuariosdb')
-// const auth = require('../middleware/auth/')
+const auth = require('../middleware/auth')
 require('dotenv').config();
 
 
@@ -11,15 +11,19 @@ router.get('/', async function(req, res, next) {
     res.json(usuario);  
   });
 
-router.get('/me', async function(req, res, next){
-  try{
-  const usuario = await User.searchToken(req.header)
-  res.json(usuario)
-  }catch(error){
-    res.status(401).send(error.message);
-  }
-});
+  router.get('/cuenta', auth, async function (req, res) {
 
+    jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
+  
+      if(error){
+        res.sendStatus(403)
+      }else{
+       const user = await User.searchToken(authData)
+        res.json(user)
+      }
+    })
+  })
+  
 router.post('/', async (req, res) => {
   try{
   const result = await User.addUser(req.body);
@@ -73,39 +77,23 @@ router.put('/conversionMoneda', async (req, res)=>{
   }
 });
 
-router.put('/inversion', verifyToken, async (req, res)=>{
-  // try{
-   // const user = await User.searchToken(req);
-    jwt.verify(req.token, process.env.SECRET, (error, authData) =>{
+router.put('/inversion', auth, async (req, res)=>{
+  
+    jwt.verify(req.token, process.env.SECRET, async (error, authData) =>{
 
-    if(error){
-      res.sendStatus(403)
-    }else{
-      res.json({
-        mensaje: 'Hola',
-        authData
-      });
+     if(error){
+       res.sendStatus(403)
+     }else{
+      const user = await User.searchToken(authData)
+      const invertido = await User.inversiones(req, user)
 
-    }
-     // const invertido = await User.inversiones(req,)
-
-    //res.send(invertido)
-    })
-  // }catch(error){
-  //   res.status(401).send(error.message)
-  // }
+      console.log(authData._id);
+       res.json(invertido)
+     }
+  })
 })
 
- function verifyToken(req, res, next) {
-   const bearerHeader = req.headers['authorization'];
 
-   if(typeof bearerHeader !== 'undefined'){
-     const bearerToken = bearerHeader.split(" ")[1]
-     req.token = bearerToken
-     next();
-   }else{
-     res.sendStatus(403)
-   }
- }
+
 
 module.exports = router;
